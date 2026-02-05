@@ -1,0 +1,44 @@
+= Compte rendu de TP : Cybersécurité
+:author: Votre Nom
+:toc: left
+:imagesdir: images
+
+== Challenges
+
+=== Challenge 1
+NOTE: Oublié de le prendre en capture d'écran
+
+=== Challenge 2
+
+image::img.png[Challenge numéro 2]
+
+
+=== Challenge 3
+image::img_1.png[Challenge numéro 3]
+
+
+---
+
+== Réponses aux questions
+
+=== Q1 : Pourquoi la gestion par cookie est-elle dangereuse ?
+C’est dangereux car le cookie est stocké sur le client (le navigateur de l'utilisateur). Un utilisateur malveillant peut facilement intercepter et modifier cette valeur en inspectant les éléments (F12) ou d'un proxy comme Burp Suite. En changeant false par true, il réalise une élévation de privilèges sans aucune vérification côté serveur.
+
+=== Q2 : Quelle est la bonne méthode côté serveur ?
+Méthode session coté serveur
+
+=== Q3 : Quel élément technique permet de distinguer le bon login dans Burp ?
+C'est la Taille (Length) de la réponse HTTP qui a permis de distinguer le bon login, car le message de succès est différent du message d'erreur.
+
+=== Q4 : Quelle "Bonne Pratique" de développement (vue en cours) permettrait d’empêcher cette attaque ?
+Utiliser des messages d'erreur génériques (ex: "Identifiants incorrects") et mettre en place un blocage après plusieurs tentatives ratées (Rate Limiting).
+
+=== Q5 : Quelle était la structure exacte du cookie décodé ? (Exemple : Login + Date, Login + Hash, etc.).
+La structure était : Login + Password hashé
+
+=== Q6 : Pourquoi l’utilisation de l’algorithme MD5 pour hasher le mot de passe dans le cookie est-elle une faiblesse critique aujourd’hui ?
+Le MD5 est beaucoup trop rapide à casser. On peut retrouver le mot de passe original en quelques secondes grâce à des sites comme CrackStation.
+
+=== Q7 : Si le développeur avait utilisé un "Grain de sel" (Salt) aléatoire inconnu de l’attaquant pour générer le hash, l’attaque aurait-elle fonctionné ? Justifiez.
+
+Non. Car le Grain de sel rend le hash unique. Les dictionnaires de hashs pré-calculés ne fonctionneraient plus, obligeant l'attaquant à faire des calculs impossibles à son échelle.
