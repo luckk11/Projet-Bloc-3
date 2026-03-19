@@ -1,0 +1,36 @@
+= Compte rendu de TP : Cybersécurité
+:author: Votre Nom
+:toc: left
+:imagesdir: images
+
+== Challenges
+
+=== Challenge 1
+image::image1.png[Challenge numéro 3]
+=== Challenge 2
+
+image::image2.png[Challenge numéro 2]
+
+
+=== Challenge 3
+
+
+
+---
+
+== Réponses aux questions
+
+=== Q1 : Architecture : Expliquez avec vos propres mots pourquoi l’attaque CSRF du Lab 1 ne fonctionnerait pas si la victime s’était déconnectée du site cible juste avant de visiter la page malveillante de l’attaquant ?
+L'attaque CSRF ne marche que si la victime est déjà connectée au site au moment où elle clique sur le lien du pirate. Pour que le changement d'email soit validé, le navigateur doit envoyer le cookie de session au serveur
+
+=== Q2 : Logique applicative : Dans le Lab 2, quelle est la faille de logique algorithmique (côté serveur) qui a permis au jeton de l’attaquant d’être accepté pour valider l’action de la victime ? Comment le développeur aurait-il dû coder sa vérification ?
+Dans ce lab, l'erreur du serveur est qu'il vérifie si le token est bon, mais il ne vérifie pas à quel utilisateur il a été donné.
+Le problème : Le serveur regarde juste si le token est dans sa liste de token valides. Comme nous avons utilisé un token que le serveur nous a donné.
+Ce qu'il fallait faire : Le développeur aurait dû programmer le site pour qu'il vérifie que le token reçu appartient bien à la personne qui envoie la demande. Si le token de l'utilisateur A arrive avec la session de l'utilisateur B, le serveur doit dire "non".
+
+=== Q3 : Analyse Mutillidae (Lab 3) : Lors de ce dernier laboratoire, vous avez hébergé votre page exploit-csrf.html localement (ou sur un serveur tiers) et non sur le serveur Mutillidae lui-même. Expliquez pourquoi le navigateur a tout de même accepté d’envoyer le cookie de session PHP (PHPSESSID) de l’utilisateur à Mutillidae lors de la soumission automatique du formulaire ?
+
+Le navigateur accepte d'envoyer le cookie PHPSESSID à Mutillidae, même si le formulaire vient d'un serveur tiers, à cause du fonctionnement historique des cookies.
+
+Par défaut, lorsqu'un navigateur doit envoyer une requête vers un domaine (ici Mutillidae), il joint automatiquement tous les cookies associés à ce domaine qu'il a en mémoire, peu importe la provenance de la requête.
+C'est le comportement standard pour maintenir la connexion de l'utilisateur. Tant que le cookie n'est pas protégé par un attribut de sécurité moderne comme SameSite=Strict, le navigateur considère qu'il doit le donner au serveur cible pour prouver l'identité de l'utilisateur, ce qui permet au formulaire de l'attaquant d'être validé avec les privilèges de la victime.

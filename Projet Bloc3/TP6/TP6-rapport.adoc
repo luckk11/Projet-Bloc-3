@@ -16,7 +16,6 @@ image::capture1.png[Challenge numéro 1]
 
 image::capture2.png[Challenge numéro 2]
 
-
 === Challenge 3
 image::capture3.png[Challenge numéro 3]
 
