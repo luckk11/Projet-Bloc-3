@@ -1,0 +1,51 @@
+= Étude de Cas : Lama Zoo 2023
+:toc: left
+:toc-title: Sommaire
+
+== Question C.3 : Sécurisation CSRF
+
+=== 1. Ou sont stockés les trucs ?
+Voila un petit tableau pour voir ou on met les jetons (tokens) de sécurité[cite: 74, 79]:
+
+[cols="1,2,2", options="header"]
+|===
+| Méthode | Côté Client (Navigateur) | Côté Serveur
+| **Synchronizer Token** | [cite_start]Dans un **champ caché** du formulaire[cite: 75, 76]. | Dans la **SESSION** de l'utilisateur[cite: 75].
+| **Double Submit Cookie** | Dans un **cookie** ET un **champ caché**[cite: 79]. | [cite_start]**Rien du tout**, le serveur compare juste les deux[cite: 80].
+|===
+
+
+
+=== 2. Config pour activer le "Synchronizer Token"
+Pour que ça marche sur CodeIgniter, faut changer deux fichiers[cite: 82, 83, 84]:
+
+* **Fichier `Security.php`** : On change la protection pour dire qu'on veut utiliser les sessions[cite: 84].
+[source,php]
+----
+public $csrfProtection = 'session';
+----
+
+* **Fichier `Filters.php`** : On rajoute 'csrf' dans la liste des filtres qui tournent tout le temps ("before")[cite: 82].
+[source,php]
+----
+public $globals = [
+    'before' => ['csrf', 'honeypot'], // On a rajouté csrf ici
+    'after'  => ['toolbar'],
+];
+----
+
+* [cite_start]**Dans les formulaires** : Les dev doivent juste ajouter cette ligne dans chaque formulaire PHP[cite: 88]:
+`<?= csrf_field() ?>`
+
+== Question C.4 : Le problème de l'API
+
+=== 1. Pourquoi l'API de Mme Erben est cassée ?
+L'API marche plus parce qu'on a activé la protection CSRF partout[cite: 52]. Maintenant, le serveur attend un jeton pour chaque requète, mais comme l'API est publique et sert juste à lire des infos, elle envoie pas de jeton[cite: 47, 48]. Du coup, le serveur bloque tout par sécurité[cite: 81].
+
+=== 2. Comment faire une "liste blanche" (whitelist) ?
+Il faut dire au filtre CSRF de pas s'occuper des routes qui commencent par `/ws/`[cite: 51, 85]. On modifie encore le fichier `Filters.php`[cite: 82]:
+
+[source,php]
+----
+'csrf' => ['except' => ['ws/*']] // On ignore tout ce qui est dans /ws/
+----
